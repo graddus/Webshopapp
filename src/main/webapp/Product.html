@@ -92,6 +92,25 @@ footer {
 	background-color: #403042;
 	color: lightsteelblue;
 }
+.category:hover {
+	border-bottom: 3px solid white;
+	background-color: #403042;
+	color: white;
+}
+
+.category.active {
+	background-color: #403042;
+	color: lightsteelblue;
+}
+.category {
+	float: left;
+	display: block;
+	color: lightsteelblue;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
 
 .searchhead {
 	background-color: #4c394e;
@@ -141,6 +160,11 @@ footer {
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a> 
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a> 
 		<a class=floatref href="/webshop/Verlanglijst.html">Mijn Verlanglijst</a>
+		<div class=category data-productid=1>Muziek</div>
+		<div class=category data-productid=2>Kantoorartikelen</div>
+		<div class=category data-productid=3>Electronica</div>
+		<div class=category data-productid=4>Games</div>
+		<div class=category data-productid=5>Films</div>
 	</div>
 	<div class="searchhead">
 		<div class="search-container">
@@ -176,21 +200,40 @@ footer {
 		}
 		else{
 		var productid=sessionStorage.getItem("id");
-		$.getJSON("/webshop/rest/product/"+productid, function(product){
-			 	document.title=product.Naam;
-			 	var text1 ="<h1>"+product.Naam+
-				"</h1><hr>"
-				+"<img id=productimage src=imgs/Producten/"+product.ID+".jpg width=700></img> <br>";
-				
-				var text2="<h2>Productomschrijving</h2><hr><br>"+product.Omschrijving+"<br><br><hr>"
-				+"<b>Fabrikant:</b> "+product.Fabrikant+"&emsp;<br>";
-				
-				var text3="<b>Prijs excl. BTW&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.79*100)/100+"<br><b>BTW&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.21*100)/100+"<br><b>Totaalprijs&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+product.Prijs+"<br><center><input type=button value='Toevoegen aan Winkelmandje' data-prodid="+product.ID+"><br><input type=button value='Toevoegen aan Verlanglijst' data-prodid="+product.ID+"/></center>"
-				$("#head").html(text1);
-			 	$("#details").html(text2);
-			 	$("#buy").html(text3);
-		});}
-	}
+		    	$.getJSON("/webshop/rest/product/sales/"+productid, function(sale){
+		    		if (sale!==undefined){
+				 	document.title=sale.Naam;
+				 	var text1 ="<h1>"+sale.Naam+
+					"</h1><hr>"
+					+"<img id=productimage src=imgs/Producten/"+sale.ID+".jpg width=700></img> <br>";
+					
+					var text2="<h2>Productomschrijving</h2><hr><br>"+sale.Omschrijving+"<br><br><hr>"
+					+"<b>Fabrikant:</b> "+sale.Fabrikant+"&emsp;<br>";
+					
+					var text3="<b>Aanbieding!</b><hr>"+sale.Tekst+"<br>"+"Deze actie is gelding van: "+sale.Van+" tot "+sale.Tot+"<hr><br><b>Prijs excl. BTW&emsp;&emsp;&emsp;&euro;"+Math.round(sale.NieuwePrijs*.79*100)/100+"<br><b>BTW&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+Math.round(sale.NieuwePrijs*.21*100)/100+"<br><b>Totaalprijs&emsp;&emsp;&emsp;&emsp;&emsp;<s>&euro;"+sale.Prijs+"</s><b>&euro;"+sale.NieuwePrijs+"</b><br><center><input type=button value='Toevoegen aan Winkelmandje' data-prodid="+sale.ID+"><br><input type=button value='Toevoegen aan Verlanglijst' data-prodid="+sale.ID+"/></center>"
+					$("#head").html(text1);
+				 	$("#details").html(text2);
+				 	$("#buy").html(text3);
+		    		}
+		    		else{
+		    			$.getJSON("/webshop/rest/product/"+productid, function(product){
+		    				document.title=product.Naam;
+						 	var text1 ="<h1>"+product.Naam+
+							"</h1><hr>"
+							+"<img id=productimage src=imgs/Producten/"+product.ID+".jpg width=700></img> <br>";
+							
+							var text2="<h2>Productomschrijving</h2><hr><br>"+product.Omschrijving+"<br><br><hr>"
+							+"<b>Fabrikant:</b> "+product.Fabrikant+"&emsp;<br>";
+							
+							var text3="<b>Prijs excl. BTW&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.79*100)/100+"<br><b>BTW&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.21*100)/100+"<br><b>Totaalprijs&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+product.Prijs+"<br><center><input type=button value='Toevoegen aan Winkelmandje' data-prodid="+product.ID+"><br><input type=button value='Toevoegen aan Verlanglijst' data-prodid="+product.ID+"/></center>"
+							$("#head").html(text1);
+						 	$("#details").html(text2);
+						 	$("#buy").html(text3);
+				    		
+		    		});}
+			});
+		        
+		    }}
 </script>
 <script>loadproduct()</script>
 <script>
@@ -205,4 +248,10 @@ $( "#search" ).click(function() {
 	 else{
 	  window.location.href = "/webshop/Error.html";
 	}});
+	
+$( ".category" ).click(function() {
+	  var value = $(this).attr('data-productid');
+	  sessionStorage.setItem("catid", value);
+	  window.location.href = "/webshop/Categorie.html";
+	});
 </script>

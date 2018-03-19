@@ -38,6 +38,25 @@ float:right;}
 	background-color: #403042;
 	color: lightsteelblue;
 }
+.category:hover {
+	border-bottom: 3px solid white;
+	background-color: #403042;
+	color: white;
+}
+
+.category.active {
+	background-color: #403042;
+	color: lightsteelblue;
+}
+.category {
+	float: left;
+	display: block;
+	color: lightsteelblue;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
 
 .searchhead {
 	background-color: #4c394e;
@@ -88,6 +107,11 @@ float:right;}
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a>
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a>
 		<a class=floatref href="/webshop/Verlanglijst.html">Mijn Verlanglijst</a>
+			<div class=category data-productid=1>Muziek</div>
+		<div class=category data-productid=2>Kantoorartikelen</div>
+		<div class=category data-productid=3>Electronica</div>
+		<div class=category data-productid=4>Games</div>
+		<div class=category data-productid=5>Films</div>
 	</div>
 	<div class="searchhead">
 		<div class="search-container">
@@ -99,8 +123,9 @@ float:right;}
 			</form>
 		</div>
 		</div>
+		<div id="title">
+		</div>
 <div id="productList">
- <h1>Nieuwste Producten</h1>
   <table id="product">
  <tr>
  	<th>Product&emsp;</th>
@@ -122,8 +147,13 @@ float:right;}
 <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
 <script>
 function loadproducts(){
-		var user=window.sessionStorage.getItem("user");
-		$.getJSON("/webshop/rest/category/"+1+"/products", function(data){
+	if (sessionStorage.getItem("catid")===null){
+		console.log("null");
+		window.location.href="/webshop/Error.html";
+	}
+	else{
+	var productid=sessionStorage.getItem("catid");
+		$.getJSON("/webshop/rest/category/"+productid+"/products", function(data){
 			$.each(data, function(i, product){
 				$("#product").append(
 						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+"/></center>&emsp;<br></td>"
@@ -133,11 +163,24 @@ function loadproducts(){
 				+"<td>"+product.Fabrikant+"&emsp;<br></td></tr>");
 			});
 
-	});
+	});}
+}
+function loadcategory(){
+if (sessionStorage.getItem("catid")===null){
+	console.log("null");
+	window.location.href="/webshop/Error.html";
+}
+else{
+var productid=sessionStorage.getItem("catid");
+$.getJSON("/webshop/rest/category/"+productid, function(product){
+ 	document.title=product.Naam;
+	$("#title").html("<h1>"+product.Naam+"</h1>"+product.Omschrijving+"<br><br>");
+});}
 }
 </script>
 <script>
 loadproducts()
+loadcategory()
 </script>
 <script>
 $('#product').on('click','#productlink',function(){
@@ -170,6 +213,12 @@ function logout(){
 		 else{
 		  window.location.href = "/webshop/Error.html";
 		}});
+	
+	$( ".category" ).click(function() {
+		  var value = $(this).attr('data-productid');
+		  sessionStorage.setItem("catid", value);
+		  window.location.href = "/webshop/Categorie.html";
+		});
 </script>
 
 </body>

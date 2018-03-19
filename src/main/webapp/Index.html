@@ -28,6 +28,26 @@ float:right;}
 	font-size: 17px;
 }
 
+.category:hover {
+	border-bottom: 3px solid white;
+	background-color: #403042;
+	color: white;
+}
+
+.category.active {
+	background-color: #403042;
+	color: lightsteelblue;
+}
+.category {
+	float: left;
+	display: block;
+	color: lightsteelblue;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
+
 .topnav a:hover {
 	border-bottom: 3px solid white;
 	background-color: #403042;
@@ -88,6 +108,11 @@ float:right;}
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a>
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a>
 		<a class=floatref href="/webshop/Verlanglijst.html">Mijn Verlanglijst</a>
+		<div class=category data-productid=1>Muziek</div>
+		<div class=category data-productid=2>Kantoorartikelen</div>
+		<div class=category data-productid=3>Electronica</div>
+		<div class=category data-productid=4>Games</div>
+		<div class=category data-productid=5>Films</div>
 	</div>
 	<div class="searchhead">
 		<div class="search-container">
@@ -100,6 +125,16 @@ float:right;}
 		</div>
 		</div>
 <div id="productList">
+<h1>Aanbiedingen</h1>
+ <table id="sales">
+ <tr>
+ 	<th>Product&emsp;</th>
+    <th>Naam&emsp;</th>
+    <th>Omschrijving&emsp;</th>
+    <th>Prijs&emsp;</th>
+    <th>Fabrikant&emsp;</th>
+  </tr>
+ </table>
  <h1>Nieuwste Producten</h1>
   <table id="product">
  <tr>
@@ -121,12 +156,26 @@ float:right;}
 	</footer>
 <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
 <script>
+function loadsales(){
+	var user=window.sessionStorage.getItem("user");
+	$.getJSON("/webshop/rest/product/sales", function(data){
+		$.each(data, function(i, product){
+			$("#sales").append(
+					"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+" /></center>&emsp;<br></td>"
+			+"<td><b> <div id=productlink data-productid="+product.ID+">"+product.Naam+"</div></b>&emsp;<br></td>"
+			+"<td>"+product.Omschrijving+"&emsp;<br></td>"
+			+"<td><s>&euro;"+product.Prijs+"</s><b>&euro;"+product.NieuwePrijs+"&emsp;<br></td>"
+			+"<td>"+product.Fabrikant+"&emsp;<br></td></tr>");
+		});
+
+});
+}
 function loadproduct(){
 		var user=window.sessionStorage.getItem("user");
 		$.getJSON("/webshop/rest/product", function(data){
 			$.each(data, function(i, product){
 				$("#product").append(
-						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+"/></center>&emsp;<br></td>"
+						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+" /></center>&emsp;<br></td>"
 				+"<td><b> <div id=productlink data-productid="+product.ID+">"+product.Naam+"</div></b>&emsp;<br></td>"
 				+"<td>"+product.Omschrijving+"&emsp;<br></td>"
 				+"<td>&euro;"+product.Prijs+"&emsp;<br></td>"
@@ -137,6 +186,7 @@ function loadproduct(){
 }
 </script>
 <script>loadproduct()
+loadsales()
 </script>
 <script>
 $('#product').on('click','#productlink',function(){
@@ -148,6 +198,21 @@ $('#product').on('click','#productimg',function(){
     var value = $(this).attr('data-productid');
 	  sessionStorage.setItem("id", value);
 	  window.location.href = "/webshop/Product.html";
+	});
+$('#sales').on('click','#productlink',function(){
+    var value = $(this).attr('data-productid');
+	  sessionStorage.setItem("id", value);
+	  window.location.href = "/webshop/Product.html";
+	});
+$('#sales').on('click','#productimg',function(){
+    var value = $(this).attr('data-productid');
+	  sessionStorage.setItem("id", value);
+	  window.location.href = "/webshop/Product.html";
+	});
+$( ".category" ).click(function() {
+	  var value = $(this).attr('data-productid');
+	  sessionStorage.setItem("catid", value);
+	  window.location.href = "/webshop/Categorie.html";
 	});
 </script>
 <script>
