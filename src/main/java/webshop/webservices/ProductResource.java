@@ -1,5 +1,10 @@
 package webshop.webservices;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -12,15 +17,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import webshop.domain.klant.Aanbieding;
 import webshop.domain.klant.Klant;
 import webshop.domain.klant.Product;
 import webshop.domain.persistence.KlantDAO;
 import webshop.domain.persistence.ProductDAO;
+import webshop.domain.persistence.SaleDAO;
 
 @Path("/product")
 public class ProductResource {
 	ProductDAO ProductDAO = new ProductDAO();
 	KlantDAO KlantDAO = new KlantDAO();
+	SaleDAO SaleDAO = new SaleDAO();
 
 	@GET
 	@Produces("application/json")
@@ -141,4 +149,62 @@ public class ProductResource {
 		}
 	}
 
-}
+	@Path("/sales")
+	@GET
+	@Produces("application/json")
+	public String getSales() {
+		JsonArrayBuilder jab = Json.createArrayBuilder();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		Date today= new Date();
+		for (Product p : ProductDAO.getAllProducts()) {
+			for (Aanbieding a:SaleDAO.getAllSales()){
+				if (p.getId()==a.getProductID()){
+					if(today.after(a.getVanDatum()) && today.before(a.getTotDatum())){
+			
+			JsonObjectBuilder job = Json.createObjectBuilder();
+			job.add("ID", p.getId());
+			job.add("Naam", p.getNaam());
+			job.add("Omschrijving", p.getOmschrijving());
+			job.add("Prijs", p.getPrijs());
+			job.add("Fabrikant", p.getFabrikant());
+			job.add("NieuwePrijs", a.getPrijs());
+			job.add("Tekst", a.getReclame());
+			job.add("Van", format.format(a.getVanDatum()));
+			job.add("Tot", format.format(a.getTotDatum()));
+
+			jab.add(job);
+		}}}}
+
+		JsonArray array = jab.build();
+
+		return (array.toString());
+	}
+	@Path("/sales/{id}")
+	@GET
+	@Produces("application/json")
+	public String getSalesByProductID(@PathParam("id") int productid) {
+		System.out.println(productid);
+		JsonArrayBuilder jab = Json.createArrayBuilder();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date today= new Date();
+		Product p=ProductDAO.getProductByID(productid);
+		Aanbieding a=SaleDAO.getSaleByProductID(productid);
+		if (p!=null && a!=null){
+		if(today.after(a.getVanDatum()) && today.before(a.getTotDatum())){
+			
+			JsonObjectBuilder job = Json.createObjectBuilder();
+			job.add("ID", p.getId());
+			job.add("Naam", p.getNaam());
+			job.add("Omschrijving", p.getOmschrijving());
+			job.add("Prijs", p.getPrijs());
+			job.add("Fabrikant", p.getFabrikant());
+			job.add("NieuwePrijs", a.getPrijs());
+			job.add("Tekst", a.getReclame());
+			job.add("Van", format.format(a.getVanDatum()));
+			job.add("Tot", format.format(a.getTotDatum()));
+
+		return (job.build().toString());
+	}}
+		return null;
+
+}}
