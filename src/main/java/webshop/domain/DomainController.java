@@ -65,4 +65,10 @@ public class DomainController {
 	public Aanbieding getSaleByProductID(int pid) {
 		return SaleDAO.getSaleByProductID(pid);
 	}
+	public Klant getKlantByLogin(String email, String password){
+		return KlantDAO.getKlantByLogin(email, password);
+}
+	public int getAmount(int klantid, int prodid){
+		return ProductDAO.getAmount(klantid, prodid);
+	}
 }

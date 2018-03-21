@@ -12,22 +12,24 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
-import webshop.domain.klant.Klant;
-import webshop.domain.persistence.KlantDAO;
+import webshop.domain.DomainController;
+import webshop.domain.Klant;
  
 @Path("Klant")
 public class KlantResource {
-	KlantDAO dao=new KlantDAO();
+	DomainController Controller=new DomainController();
 	
 
 	@GET
 	@Produces("application/json")
-	public String CountryList() {
+	public String getAllKlanten() {
 		JsonArrayBuilder jab = Json.createArrayBuilder();
 		DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ENGLISH);
 		
-		for (Klant c : dao.getAllKlanten()) {
+		for (Klant c : Controller.getAllKlanten()) {
 			JsonObjectBuilder job = Json.createObjectBuilder();
 			job.add("id", c.getId());
 			job.add("naam", c.getNaam());
@@ -51,10 +53,37 @@ public class KlantResource {
 	@Path("{id}")
 	@GET
 	@Produces("application/json")
-	public String SeriesByCustID(@PathParam("id") int id) {
-		Klant k = dao.getKlantByID(id);
+	public String getKlantByID(@PathParam("id") int id) {
+		Klant k = Controller.getKlantByID(id);
 		DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ENGLISH);
 		
+		if (k!=null){
+		JsonObjectBuilder job = Json.createObjectBuilder();
+		job.add("id", k.getId());
+		job.add("naam", k.getNaam());
+		job.add("email", k.getGeslacht());
+		job.add("tel", k.getTelefoonnummer());
+		job.add("gebdatum", format.format(k.getGeboortedatum()));
+		job.add("woonstraat", k.getWoonAdres().getStraat());
+		job.add("woonnummer", k.getWoonAdres().getStraatnummer());
+		job.add("wachtwoord", k.getAccount().getWachtwoord());
+		job.add("factuurstraat", k.getAccount().getFactuurAdres().getStraat());
+		job.add("factuurnummer", k.getAccount().getFactuurAdres().getStraatnummer());
+		job.add("opendatum", format.format(k.getAccount().getOpenDatum()));
+		
+
+		return (job.build().toString());
+		}else{
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+	}
+	@Path("/login/{email}/{password}")
+	@GET
+	@Produces("application/json")
+	public String getKlantByLogin(@PathParam("email") String email, @PathParam("password") String password) {
+		Klant k = Controller.getKlantByLogin(email, password);
+		DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ENGLISH);
+		if (k!=null){
 		JsonObjectBuilder job = Json.createObjectBuilder();
 		job.add("id", k.getId());
 		job.add("naam", k.getNaam());
@@ -71,6 +100,7 @@ public class KlantResource {
 
 		return (job.build().toString());
 	}
-	
+		return null;
+}
 }
 

@@ -132,7 +132,7 @@ footer {
 <body>
 	<div class="topnav">
 		<a class="active" href="/webshop/Index.html">Home</a> <a href="#about">About</a>
-		<a href="#contact">Contact</a> <a class=floatref href="/webshop/login.html">Uitloggen</a>
+		<a href="#contact">Contact</a> <a class=floatref id="logout " onclick="logout()">Uitloggen</a>
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a> 
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a> 
 			<div class=category data-productid=1>Muziek</div>
@@ -169,9 +169,12 @@ footer {
 <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
 <script>
 	function loadproduct(){
-
+		var user=window.sessionStorage.getItem("user");
+		if (user===null){
+			window.location.href = "/webshop/login.html";
+		}else{
 		var productid=sessionStorage.getItem("id");
-		$.getJSON("/webshop/rest/Klant/1", function(Klant){
+		$.getJSON("/webshop/rest/Klant/"+user, function(Klant){
 			 	document.title=Klant.naam;
 				var text1="<img src=imgs/Klanten/"+Klant.id+".jpg width=300px height=300px border=2/><h2>"+Klant.naam+"</h2>" 
 				var text2="<h2>Uw gegevens</h2><hr><br>Geboortedatum: "+Klant.gebdatum+"<br>Telefoonnummer: "+Klant.tel+"<br>Emailadres: "+Klant.email+"<br> Factuuradres: "+Klant.factuurstraat+" "+Klant.factuurnummer+" <br>Registratiedatum: "+Klant.opendatum
@@ -179,9 +182,17 @@ footer {
 				$("#details").html(text2);
 
 		});
-	}
+	}}
 </script>
 <script>loadproduct()</script>
+<script>
+function logout(){
+	alert("U wordt nu uitgelogd.")
+	sessionStorage.removeItem('user');
+	window.location.href = "/webshop/Index.html";
+	
+}
+</script>
 <script>
 $( "#search" ).click(function() {
 	  var value=$('#textfield').val();

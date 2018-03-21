@@ -196,7 +196,8 @@ $('#product').on('click','#productimg',function(){
 <script>
 function logout(){
 	alert("U wordt nu uitgelogd.")
-	location.reload();
+	sessionStorage.removeItem('user');
+	window.location.href = "/webshop/Index.html";
 	
 }
 </script>

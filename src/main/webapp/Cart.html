@@ -148,8 +148,11 @@ float:right;}
 <script>
 function loadproduct(){
 		var user=window.sessionStorage.getItem("user");
-		var totaal=0
-		$.getJSON("/webshop/rest/product/basket/1", function(data){
+		var totaal=0;
+		if (user===null){
+			window.location.href = "/webshop/login.html";
+		}else{
+		$.getJSON("/webshop/rest/product/basket/"+user, function(data){
 			$.each(data, function(i, product){
 				$("#product").append(
 						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+"/></center>&emsp;<br></td>"
@@ -159,11 +162,12 @@ function loadproduct(){
 				+"<td>"+product.Fabrikant+"&emsp;<br></td>"+"<td><b>"+product.Aantal+"</b><br></td><td><input type=button value='Verwijder uit mandje' data-custid="+user+" data-prodid="+product.ID+"></td></tr>");
 				totaal+=Math.round(product.Prijs*product.Aantal*100)/100			
 			});
-			$('#product').append("<tr><td></td><td></td><td></td><td></td><td></td><td><b>Totaalprijs</b></td><td><b>"+totaal+"</b></td></tr>");
-	});
+			$('#product').append("<tr><td></td><td></td><td></td><td></td><td><b>Totaalprijs</b></td><td><b>&euro;"+totaal+"</b></td><td></td></tr>");
+	});}
 }
 </script>
 <script>loadproduct()
+document.title="Mijn Winkelmandje"
 </script>
 <script>
 $('#product').on('click','#productlink',function(){
@@ -180,7 +184,8 @@ $('#product').on('click','#productimg',function(){
 <script>
 function logout(){
 	alert("U wordt nu uitgelogd.")
-	location.reload();
+	sessionStorage.removeItem('user');
+	window.location.href = "/webshop/Index.html";
 	
 }
 </script>
@@ -205,7 +210,7 @@ function logout(){
 </script>
 <script>
 $("#product").on('click', 'input[type=button]', function () {
-	   var custid=1;
+		var custid=window.sessionStorage.getItem("user");
 	   var seriesid = $(this).data('prodid');
 	   var uri = "/webshop/rest/product/basket/delete/" + custid+"/"+seriesid;
 	   $.ajax(uri, { 

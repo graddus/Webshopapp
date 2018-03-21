@@ -156,7 +156,7 @@ footer {
 <body>
 	<div class="topnav">
 		<a class="active" href="/webshop/Index.html">Home</a> <a href="#about">About</a>
-		<a href="#contact">Contact</a> <a class=floatref href="login">Uitloggen</a>
+		<a href="#contact">Contact</a> <a class=floatref id="logout " onclick="logout()">Uitloggen</a>
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a> 
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a> 
 		<div class=category data-productid=1>Muziek</div>
@@ -209,7 +209,7 @@ footer {
 					var text2="<h2>Productomschrijving</h2><hr><br>"+sale.Omschrijving+"<br><br><hr>"
 					+"<b>Fabrikant:</b> "+sale.Fabrikant+"&emsp;<br>";
 					
-					var text3="<b>Aanbieding!</b><hr>"+sale.Tekst+"<br>"+"Deze actie is gelding van: "+sale.Van+" tot "+sale.Tot+"<hr><br><b>Prijs excl. BTW&emsp;&emsp;&emsp;&euro;"+Math.round(sale.NieuwePrijs*.79*100)/100+"<br><b>BTW&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+Math.round(sale.NieuwePrijs*.21*100)/100+"<br><b>Totaalprijs&emsp;&emsp;&emsp;&emsp;&emsp;<s>&euro;"+sale.Prijs+"</s><b>&euro;"+sale.NieuwePrijs+"</b><br><center><input type=button value='Toevoegen aan Winkelmandje' data-prodid="+sale.ID+"><br><input type=button value='Toevoegen aan Verlanglijst' data-prodid="+sale.ID+"/></center>"
+					var text3="<b>Aanbieding!</b><hr>"+sale.Tekst+"<br>"+"Deze actie is gelding van: "+sale.Van+" tot "+sale.Tot+"<hr><br><b>Prijs excl. BTW&emsp;&emsp;&emsp;&euro;"+Math.round(sale.NieuwePrijs*.79*100)/100+"<br><b>BTW&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+Math.round(sale.NieuwePrijs*.21*100)/100+"<br><b>Totaalprijs&emsp;&emsp;&emsp;&emsp;&emsp;<s>&euro;"+sale.Prijs+"</s><b>&euro;"+sale.NieuwePrijs+"</b><br><center><input type=button value='Toevoegen aan Winkelmandje' data-prodid="+sale.ID+"><br></center>"
 					$("#head").html(text1);
 				 	$("#details").html(text2);
 				 	$("#buy").html(text3);
@@ -255,8 +255,17 @@ $( ".category" ).click(function() {
 	});
 </script>
 <script>
+function logout(){
+	alert("U wordt nu uitgelogd.")
+	sessionStorage.removeItem('user');
+	window.location.href = "/webshop/Index.html";
+	
+}
+</script>
+<script>
 $("#buy").on('click', 'input[type=button]', function () {
-		var user=1
+	   var user=window.sessionStorage.getItem("user");
+	   if (user!=null){
 	   var prodid = $(this).data('prodid');
 		var amount = prompt("Selecteer het aantal producten", "Bepaal de hoeveelheid producten");
 		if (amount.match(/^[0-9]/)){
@@ -275,7 +284,10 @@ $("#buy").on('click', 'input[type=button]', function () {
 	   });
 		}else{
 			alert("Het ingevoerde product aantal bestaat niet uit cijfers.")
-		}
+		}}
+	   else{
+		   alert("U moet ingelogd zijn om producten toe te voegen aan uw winkelmandje.")
+	   }
 		
 		});
 </script>

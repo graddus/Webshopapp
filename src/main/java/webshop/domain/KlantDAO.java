@@ -187,4 +187,23 @@ public class KlantDAO extends BaseDAO{
         }
         return ad;
     }
+    public Klant getKlantByLogin(String email, String password){
+    	int klantid=0;
+    	Klant k=null;
+    	try(Connection conn=super.getConnection()){
+    	PreparedStatement statement = conn.prepareStatement("select klanten.id FROM klanten, accounts where klanten.EMAIL='"+email+"' AND klanten.accountid in (SELECT id from accounts where wachtwoord='"+password+"') AND klanten.accountid=accounts.id");
+        statement.executeQuery();
+        ResultSet rs = statement.executeQuery();
+
+        while (rs.next()) {
+            klantid = rs.getInt("id");
+        }
+        
+    	k=getKlantByID(klantid);
+    	}
+    	catch(SQLException e){
+    		e.printStackTrace();
+    	}
+    	return k;
+}
 }

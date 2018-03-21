@@ -11,20 +11,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import webshop.domain.klant.Categorie;
-import webshop.domain.klant.Product;
-import webshop.domain.persistence.ProductDAO;
+import webshop.domain.Categorie;
+import webshop.domain.DomainController;
+import webshop.domain.Product;
+
 
 @Path("/category")
 public class CategorieResource {
-	ProductDAO ProductDAO = new ProductDAO();
+	DomainController Controller=new DomainController();
 
 	@GET
 	@Produces("application/json")
-	public String CountryList() {
+	public String getAllCategories() {
 		JsonArrayBuilder jab = Json.createArrayBuilder();
 		ArrayList<Integer>urllist=new ArrayList<Integer>();
-		for (Categorie c : ProductDAO.getAllCategories()) {
+		for (Categorie c : Controller.getAllCategories()) {
 			JsonObjectBuilder job = Json.createObjectBuilder();
 			job.add("ID", c.getId());
 			job.add("Naam", c.getNaam());
@@ -46,9 +47,9 @@ public class CategorieResource {
 	@Path("{id}")
 	@GET
 	@Produces("application/json")
-	public String CountryList(@PathParam("id") int id) {
+	public String getCategorieByID(@PathParam("id") int id) {
 		ArrayList<Integer>urllist=new ArrayList<Integer>();
-		Categorie c = ProductDAO.getCategoryByID(id);
+		Categorie c = Controller.getCategoryByID(id);
 		JsonObjectBuilder job = Json.createObjectBuilder();
 		job.add("ID", c.getId());
 		job.add("Naam", c.getNaam());
@@ -63,10 +64,10 @@ public class CategorieResource {
 	@Path("{id}/products")
 	@GET
 	@Produces("application/json")
-	public String CountryList2(@PathParam("id") int catid) {
+	public String getProductsByCategorieID(@PathParam("id") int catid) {
 		JsonArrayBuilder jab = Json.createArrayBuilder();
 
-		for (Product p : ProductDAO.getProductenbyCategorie(catid)) {
+		for (Product p : Controller.getProductenbyCategorie(catid)) {
 			JsonObjectBuilder job = Json.createObjectBuilder();
 			job.add("ID", p.getId());
 			job.add("Naam", p.getNaam());

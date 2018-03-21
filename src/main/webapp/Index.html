@@ -186,6 +186,7 @@ function loadproduct(){
 </script>
 <script>loadproduct()
 loadsales()
+document.title="Welkom bij onze webshop!"
 </script>
 <script>
 $('#product').on('click','#productlink',function(){
@@ -217,6 +218,7 @@ $( ".category" ).click(function() {
 <script>
 function logout(){
 	alert("U wordt nu uitgelogd.")
+	sessionStorage.removeItem('user');
 	location.reload();
 	
 }

@@ -329,4 +329,23 @@ public void deletefromCart(int klantid, int productid) {
 			System.out.println(e);
 		}
 	}
+public int getAmount(int klantid, int prodid) {
+    int result=0;
+    try (Connection conn = super.getConnection()) {
+        PreparedStatement statement = conn.prepareStatement("SELECT aantal from Cart Where KlantID="+klantid+" AND ProductID="+prodid);
+        statement.executeQuery();
+        ResultSet rs = statement.executeQuery();
+
+        while (rs.next()) {
+            result = rs.getInt("aantal");
+        }
+        rs.close();
+        statement.close();
+        conn.close();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return result;
+}
 }

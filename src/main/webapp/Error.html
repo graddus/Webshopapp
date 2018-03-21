@@ -5,11 +5,14 @@
 <title>HP Pavilion Power-15</title>
 </head>
 <style>
-.topnav .floatref{
-float:right;}
+.topnav .floatref {
+	float: right;
+}
+
 #textfield {
 	width: 70%;
 }
+
 .wrapper {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
@@ -48,7 +51,7 @@ float:right;}
 }
 
 .topnav a:hover {
-	border-bottom:3px solid white;
+	border-bottom: 3px solid white;
 	background-color: #403042;
 	color: white;
 }
@@ -57,6 +60,7 @@ float:right;}
 	background-color: #403042;
 	color: lightsteelblue;
 }
+
 .category:hover {
 	border-bottom: 3px solid white;
 	background-color: #403042;
@@ -67,6 +71,7 @@ float:right;}
 	background-color: #403042;
 	color: lightsteelblue;
 }
+
 .category {
 	float: left;
 	display: block;
@@ -76,9 +81,11 @@ float:right;}
 	text-decoration: none;
 	font-size: 17px;
 }
-.searchhead{
-background-color:#4c394e;
+
+.searchhead {
+	background-color: #4c394e;
 }
+
 .searchhead input[type=text] {
 	padding: 6px;
 	font-size: 17px;
@@ -86,7 +93,7 @@ background-color:#4c394e;
 }
 
 .searchhead .search-container button {
-background-color:#4c394e;
+	background-color: #4c394e;
 	padding: 6px 10px;
 	margin-top: 8px;
 	margin-right: 16px;
@@ -121,11 +128,11 @@ background-color:#4c394e;
 
 	<div class="topnav">
 		<a class="active" href="/webshop/Index.html">Home</a> <a href="#about">About</a>
-		<a href="#contact">Contact</a>
-		<a class=floatref id="logout " onclick="logout()">Uitloggen</a>
-		<a class=floatref href="/webshop/Klant.html">Mijn Account</a>
-		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a>
-			<div class=category data-productid=1>Muziek</div>
+		<a href="#contact">Contact</a> <a class=floatref id="logout "
+			onclick="logout()">Uitloggen</a> <a class=floatref
+			href="/webshop/Klant.html">Mijn Account</a> <a class=floatref
+			href="/webshop/Cart.html">Mijn Winkelmandje</a>
+		<div class=category data-productid=1>Muziek</div>
 		<div class=category data-productid=2>Kantoorartikelen</div>
 		<div class=category data-productid=3>Electronica</div>
 		<div class=category data-productid=4>Games</div>
@@ -133,37 +140,44 @@ background-color:#4c394e;
 	</div>
 	<div class="searchhead">
 		<div class="search-container">
-		<form>
-		<a href="/webshop/Index.html">
-		<img src=/webshop/imgs/logo.png height=50px/></a>&emsp;&emsp;
-				<input type="text" id=textfield placeholder="Search.." name="search" width=5px>
-					<input type=button id=search value=Search style= font-size:22px;/>
+			<form>
+				<a href="/webshop/Index.html"> <img src=/webshop/imgs/logo.png
+					height=50px /></a>&emsp;&emsp; <input type="text" id=textfield
+					placeholder="Search.." name="search" width=5px> <input
+					type=button id=search value=Search style="font-size: 22px;" />
 			</form>
 		</div>
-		</div>
+	</div>
 	<br>
 	<h1>Oops, Something went wrong!</h1>
 </body>
-	<script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
-	<script>
-	document.title="Error";
+<script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+<script>
+	function logout() {
+		alert("U wordt nu uitgelogd.")
+		sessionStorage.removeItem('user');
+		window.location.href = "/webshop/Index.html";
+
+	}
 </script>
-	<script>loadproduct()</script>
-	<script>
-$( "#search" ).click(function() {
-	  var value=$('#textfield').val();
-	 if (value!=null&&value!=""){
-		 sessionStorage.setItem("id", value);
-		  window.location.href = "/webshop/Product.html";
-	 }
-	 else{
-	  window.location.href = "/webshop/Error.html";
-	}});
-	
-$( ".category" ).click(function() {
-	  var value = $(this).attr('data-productid');
-	  sessionStorage.setItem("catid", value);
-	  window.location.href = "/webshop/Categorie.html";
+<script>
+	document.title="Error";
+	loadproduct()
+</script>
+<script>
+	$("#search").click(function() {
+		var value = $('#textfield').val();
+		if (value != null && value != "") {
+			sessionStorage.setItem("id", value);
+			window.location.href = "/webshop/Product.html";
+		} else {
+			window.location.href = "/webshop/Error.html";
+		}
+	});
+
+	$(".category").click(function() {
+		var value = $(this).attr('data-productid');
+		sessionStorage.setItem("catid", value);
+		window.location.href = "/webshop/Categorie.html";
 	});
 </script>
-
