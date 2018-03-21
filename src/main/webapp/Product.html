@@ -159,7 +159,6 @@ footer {
 		<a href="#contact">Contact</a> <a class=floatref href="login">Uitloggen</a>
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a> 
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a> 
-		<a class=floatref href="/webshop/Verlanglijst.html">Mijn Verlanglijst</a>
 		<div class=category data-productid=1>Muziek</div>
 		<div class=category data-productid=2>Kantoorartikelen</div>
 		<div class=category data-productid=3>Electronica</div>
@@ -225,7 +224,7 @@ footer {
 							var text2="<h2>Productomschrijving</h2><hr><br>"+product.Omschrijving+"<br><br><hr>"
 							+"<b>Fabrikant:</b> "+product.Fabrikant+"&emsp;<br>";
 							
-							var text3="<b>Prijs excl. BTW&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.79*100)/100+"<br><b>BTW&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.21*100)/100+"<br><b>Totaalprijs&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+product.Prijs+"<br><center><input type=button value='Toevoegen aan Winkelmandje' data-prodid="+product.ID+"><br><input type=button value='Toevoegen aan Verlanglijst' data-prodid="+product.ID+"/></center>"
+							var text3="<b>Prijs excl. BTW&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.79*100)/100+"<br><b>BTW&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+Math.round(product.Prijs*.21*100)/100+"<br><b>Totaalprijs&emsp;&emsp;&emsp;&emsp;&emsp;&euro;"+product.Prijs+"<br><center><input type=button value='Toevoegen aan Winkelmandje' data-prodid="+product.ID+"><br></center>"
 							$("#head").html(text1);
 						 	$("#details").html(text2);
 						 	$("#buy").html(text3);
@@ -254,4 +253,29 @@ $( ".category" ).click(function() {
 	  sessionStorage.setItem("catid", value);
 	  window.location.href = "/webshop/Categorie.html";
 	});
+</script>
+<script>
+$("#buy").on('click', 'input[type=button]', function () {
+		var user=1
+	   var prodid = $(this).data('prodid');
+		var amount = prompt("Selecteer het aantal producten", "Bepaal de hoeveelheid producten");
+		if (amount.match(/^[0-9]/)){
+
+	   var uri = "/webshop/rest/product/basket/add/" +user+"/"+prodid+"/"+amount;
+	   $.ajax(uri, { 
+	       type: "POST", 
+	       success: function(response) {
+	           $("#response").text("Het product is aan uw winkelwagentje toegevoegd.");
+	           alert("Het product is aan uw winkelwagentje toegevoegd.");
+	           location.reload();
+	       },
+	       error: function(response) {
+	           $("#response").text("Dit product staat al in uw winkelmandje");
+	       }
+	   });
+		}else{
+			alert("Het ingevoerde product aantal bestaat niet uit cijfers.")
+		}
+		
+		});
 </script>

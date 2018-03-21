@@ -106,7 +106,6 @@ float:right;}
 		<a class=floatref id="logout " onclick="logout()">Uitloggen</a>
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a>
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a>
-		<a class=floatref href="/webshop/Verlanglijst.html">Mijn Verlanglijst</a>
 			<div class=category data-productid=1>Muziek</div>
 		<div class=category data-productid=2>Kantoorartikelen</div>
 		<div class=category data-productid=3>Electronica</div>
@@ -132,6 +131,8 @@ float:right;}
     <th>Omschrijving&emsp;</th>
     <th>Prijs&emsp;</th>
     <th>Fabrikant&emsp;</th>
+    <th>Aantal&emsp;</th>
+    <th>Acties&emsp;</th>
   </tr>
  </table>
  </div>
@@ -147,21 +148,22 @@ float:right;}
 <script>
 function loadproduct(){
 		var user=window.sessionStorage.getItem("user");
+		var totaal=0
 		$.getJSON("/webshop/rest/product/basket/1", function(data){
 			$.each(data, function(i, product){
 				$("#product").append(
 						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+"/></center>&emsp;<br></td>"
 				+"<td><b> <div id=productlink data-productid="+product.ID+">"+product.Naam+"</div></b>&emsp;<br></td>"
 				+"<td>"+product.Omschrijving+"&emsp;<br></td>"
-				+"<td>&euro;"+product.Prijs+"&emsp;<br></td>"
-				+"<td>"+product.Fabrikant+"&emsp;<br></td></tr>");
+				+"<td>&euro;"+Math.round(product.Prijs*product.Aantal*100)/100+"&emsp;<br></td>"
+				+"<td>"+product.Fabrikant+"&emsp;<br></td>"+"<td><b>"+product.Aantal+"</b><br></td><td><input type=button value='Verwijder uit mandje' data-custid="+user+" data-prodid="+product.ID+"></td></tr>");
+				totaal+=Math.round(product.Prijs*product.Aantal*100)/100			
 			});
-
+			$('#product').append("<tr><td></td><td></td><td></td><td></td><td></td><td><b>Totaalprijs</b></td><td><b>"+totaal+"</b></td></tr>");
 	});
 }
 </script>
 <script>loadproduct()
-loadcategory()
 </script>
 <script>
 $('#product').on('click','#productlink',function(){
@@ -200,6 +202,24 @@ function logout(){
 		  sessionStorage.setItem("catid", value);
 		  window.location.href = "/webshop/Categorie.html";
 		});
+</script>
+<script>
+$("#product").on('click', 'input[type=button]', function () {
+	   var custid=1;
+	   var seriesid = $(this).data('prodid');
+	   var uri = "/webshop/rest/product/basket/delete/" + custid+"/"+seriesid;
+	   $.ajax(uri, { 
+	       type: "delete", 
+	       success: function(response) {
+	           $("#response").text("Het product is uit uw winkelmandje verwijderd.");
+	           alert("Het product is uit uw winkelmandje verwijderd.");
+	           location.reload();
+	       },
+	       error: function(response) {
+	           $("#response").text("Er is iets misgegaan.");
+	       }
+	   });
+	});
 </script>
 
 </body>
