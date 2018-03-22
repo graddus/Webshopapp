@@ -360,12 +360,12 @@ public class ProductDAO extends BaseDAO {
 
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn
-					.prepareStatement("INSTERT INTO producten(id,naam,prijs,omschrijving,fabrikant) VALUES("
-							+id+"," +naam+"," +prijs+"," +omschrijving+"," +fabrikant+")");
+					.prepareStatement("INSERT INTO producten(id,naam,prijs,omschrijving,fabrikant) VALUES("
+							+id+",'" +naam+"'," +prijs+",'" +omschrijving+"','" +fabrikant+"')");
 			statement.executeQuery();
-			ResultSet rs = statement.executeQuery();
-
-			rs.close();
+			//ResultSet rs = statement.executeQuery();
+			//rs.close();
+			//TODO hier moet ergens een insert voor categorie komen 
 			statement.close();
 			conn.close();
 
@@ -376,12 +376,10 @@ public class ProductDAO extends BaseDAO {
 	}
 
 	public void editProduct(int id, String naam,double prijs,String omschrijving,String fabrikant) {
-	//TODO correct sql tatement
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn
-					.prepareStatement("UPDATE producten set naam= "+naam+",prijs= "+prijs+",omschrijving ="+omschrijving
-							+",fabrikant= "+fabrikant+" WHERE id ="+id);
-							
+					.prepareStatement("UPDATE producten set naam= '"+naam+"',prijs= "+prijs+",omschrijving ='"+omschrijving
+							+"',fabrikant= '"+fabrikant+"' WHERE id ="+id);			
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
 
@@ -396,17 +394,12 @@ public class ProductDAO extends BaseDAO {
 	}
 	
 	public void deleteProduct(int id) {
-		//TODO correct statement
-		int result = 0;
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn
 					.prepareStatement("delete from producten where id= " + id);
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
 
-			while (rs.next()) {
-				result = rs.getInt("aantal");
-			}
 			rs.close();
 			statement.close();
 			conn.close();
