@@ -71,4 +71,14 @@ public class DomainController {
 	public int getAmount(int klantid, int prodid){
 		return ProductDAO.getAmount(klantid, prodid);
 	}
+	
+	public void addProduct(int id, String naam,double prijs,String omschrijving,String fabrikant){
+		ProductDAO.addProduct(id, naam, prijs, omschrijving, fabrikant);
+	}
+	public void editProduct(int id, String naam,double prijs,String omschrijving,String fabrikant){
+		 ProductDAO.editProduct(id, naam, prijs, omschrijving, fabrikant);
+	}
+	public void deleteProduct(int id){
+		 ProductDAO.deleteProduct(id);
+	}
 }
