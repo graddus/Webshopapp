@@ -18,15 +18,15 @@ public class AdminProductResource {
 	public Response addProduct(@PathParam("id") int id, @PathParam("naam") String naam,
 			@PathParam("prijs") double prijs,@PathParam("omschrijving") String omschrijving,
 			@PathParam("fabrikant") String fabrikant) {
-		Product found = Controller.getProductByID(id);
-		if (found == null) {
-			return Response.status(Response.Status.NOT_FOUND).build();
-		} else {
+//		Product found = Controller.getProductByID(id);
+//		if (found != null) {
+//			return Response.status(Response.Status.NOT_FOUND).build();
+//		} else {
 			Controller.addProduct(id, naam, prijs, omschrijving, fabrikant);
 			System.out.println(id+naam+prijs);
 			return Response.ok().build();
 		}
-	}
+//	}
 	
 	@Path("/{id}/{naam}/{prijs}/{omschrijving}/{fabrikant}")
 	@PUT
