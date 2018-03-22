@@ -63,6 +63,8 @@ public class KlantResource {
 		job.add("naam", k.getNaam());
 		job.add("email", k.getGeslacht());
 		job.add("tel", k.getTelefoonnummer());
+		System.out.println(format.format(k.getGeboortedatum()));
+		System.out.println(k.getAccount().getOpenDatum());
 		job.add("gebdatum", format.format(k.getGeboortedatum()));
 		job.add("woonstraat", k.getWoonAdres().getStraat());
 		job.add("woonnummer", k.getWoonAdres().getStraatnummer());

@@ -13,6 +13,7 @@ public class DomainController {
 	ProductDAO ProductDAO = new ProductDAO();
 	KlantDAO KlantDAO = new KlantDAO();
 	SaleDAO SaleDAO = new SaleDAO();
+	BestellingDAO BestDAO=new BestellingDAO();
 
 	public ArrayList<Klant> getAllKlanten() {
 		return KlantDAO.getAllKlanten();
@@ -71,7 +72,12 @@ public class DomainController {
 	public int getAmount(int klantid, int prodid){
 		return ProductDAO.getAmount(klantid, prodid);
 	}
-	
+	public Bestelling getBestellingByID(int ordid){
+		return BestDAO.getBestellingByID(ordid);
+	}
+	public ArrayList<Bestelling> getAllBestellingen(){
+		return BestDAO.getAllBestellingen();
+	}
 	public void addProduct(int id, String naam,double prijs,String omschrijving,String fabrikant){
 		ProductDAO.addProduct(id, naam, prijs, omschrijving, fabrikant);
 	}

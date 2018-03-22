@@ -78,7 +78,8 @@ public class KlantDAO extends BaseDAO{
     public Klant getKlantByID(int i) {
         Klant klant=null;
         try (Connection conn = super.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement("SELECT * from Klanten where id="+i);
+            PreparedStatement statement = conn.prepareStatement("SELECT * from Klanten where id=?");
+            statement.setInt(1, i);
             statement.executeQuery();
             ResultSet rs = statement.executeQuery();
 
@@ -124,7 +125,8 @@ public class KlantDAO extends BaseDAO{
     public Account getAccountByID(int i) {
         Account acc= null;
         try (Connection conn = super.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement("SELECT * from Accounts where id=" + i);
+            PreparedStatement statement = conn.prepareStatement("SELECT * from Accounts where id=?");
+            statement.setInt(1, i);
             statement.executeQuery();
             ResultSet rs = statement.executeQuery();
 
@@ -191,7 +193,9 @@ public class KlantDAO extends BaseDAO{
     	int klantid=0;
     	Klant k=null;
     	try(Connection conn=super.getConnection()){
-    	PreparedStatement statement = conn.prepareStatement("select klanten.id FROM klanten, accounts where klanten.EMAIL='"+email+"' AND klanten.accountid in (SELECT id from accounts where wachtwoord='"+password+"') AND klanten.accountid=accounts.id");
+    	PreparedStatement statement = conn.prepareStatement("select klanten.id FROM klanten, accounts where klanten.EMAIL=? AND klanten.accountid in (SELECT id from accounts where wachtwoord=?) AND klanten.accountid=accounts.id");
+        statement.setString(1, email);
+    	statement.setString(2, password);
         statement.executeQuery();
         ResultSet rs = statement.executeQuery();
 

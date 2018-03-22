@@ -13,6 +13,7 @@ import webshop.domain.Product;
 
 public class AdminProductResource {
 	DomainController Controller=new DomainController();
+	
 	@Path("/{id}/{naam}/{prijs}/{omschrijving}/{fabrikant}")
 	@POST
 	public Response addProduct(@PathParam("id") int id, @PathParam("naam") String naam,

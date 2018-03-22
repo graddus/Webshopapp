@@ -73,7 +73,8 @@ public class ProductDAO extends BaseDAO {
 	public Product getProductByID(int i) {
 		Product r = null;
 		try (Connection conn = super.getConnection()) {
-			PreparedStatement statement = conn.prepareStatement("SELECT * from Producten Where ID=" + i);
+			PreparedStatement statement = conn.prepareStatement("SELECT * from Producten Where ID=?");
+			statement.setInt(1, i);
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
 
@@ -109,8 +110,8 @@ public class ProductDAO extends BaseDAO {
 	public ArrayList<Product> getProductenbyCategorie(int catid) {
 		ArrayList<Product> result = new ArrayList<Product>();
 		try (Connection conn = super.getConnection()) {
-			PreparedStatement statement = conn
-					.prepareStatement("SELECT * from CategorieProduct where categoryid=" + catid);
+			PreparedStatement statement = conn.prepareStatement("SELECT * from CategorieProduct where categoryid=?");
+			statement.setInt(1, catid);
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
 
@@ -133,7 +134,8 @@ public class ProductDAO extends BaseDAO {
 	public Categorie getCategoryByID(int i) {
 		Categorie cat = null;
 		try (Connection conn = super.getConnection()) {
-			PreparedStatement statement = conn.prepareStatement("SELECT * from Categorie where id=" + i);
+			PreparedStatement statement = conn.prepareStatement("SELECT * from Categorie where id=?");
+			statement.setInt(1, i);
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
 
@@ -213,7 +215,8 @@ public class ProductDAO extends BaseDAO {
 		ArrayList<Product> list = new ArrayList<Product>();
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn.prepareStatement(
-					"SELECT * from Producten where id in (select productid from cart where klantid=" + klantid + ")");
+					"SELECT * from Producten where id in (select productid from cart where klantid= ?");
+			statement.setInt(1, klantid);
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
 
@@ -251,8 +254,8 @@ public class ProductDAO extends BaseDAO {
 		ArrayList<Aanbieding> list = new ArrayList<Aanbieding>();
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn.prepareStatement(
-					"SELECT * from Aanbiedingen where id in (select productid from wishlist where productid="
-							+ productid + ")");
+					"SELECT * from Aanbiedingen where id in (select productid from wishlist where productid=?");
+			statement.setInt(1, productid);
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
 
@@ -295,12 +298,16 @@ public class ProductDAO extends BaseDAO {
 			}
 			if (dupe == true) {
 				aantal = aantal / 2;
-				statement = conn.prepareStatement("UPDATE cart SET aantal=aantal+" + aantal + " WHERE klantid="
-						+ klantid + " AND productid=" + productid);
+				statement = conn.prepareStatement("UPDATE cart SET aantal=aantal+? WHERE klantid=? AND productid=?");
+				statement.setInt(1, aantal);
+				statement.setInt(2, klantid);
+				statement.setInt(3, productid);
 			} else {
 				System.out.println(aantal);
-				statement = conn
-						.prepareStatement("INSERT into cart values(" + klantid + "," + productid + ", " + aantal + ")");
+				statement = conn.prepareStatement("INSERT into cart values(?,?,?)");
+				statement.setInt(1, klantid);
+				statement.setInt(2, productid);
+				statement.setInt(3, aantal);
 			}
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
@@ -318,16 +325,13 @@ public class ProductDAO extends BaseDAO {
 		try {
 			Connection conn = super.getConnection();
 
-			// Een eerste SQL statement maken
-			Statement stmt = conn.createStatement();
-
-			// Een tweede statement maken dat een resultaat oplevert
-			String queryText = "delete from cart where klantid=" + klantid + "AND productid=" + productid;
-
+			PreparedStatement statement = conn.prepareStatement("delete from cart where klantid=? AND productid=?");
+			statement.setInt(1, klantid);
+			statement.setInt(2, productid);
 			// Een tweede statement uitvoeren
-			stmt.executeQuery(queryText);
+			statement.executeQuery();
 			conn.commit();
-			stmt.close();
+			statement.close();
 			conn.close();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -354,60 +358,65 @@ public class ProductDAO extends BaseDAO {
 		}
 		return result;
 	}
-
 	// PRoductbeheer
-	public void addProduct(int id, String naam,double prijs,String omschrijving,String fabrikant) {
+		public void addProduct(int id, String naam,double prijs,String omschrijving,String fabrikant) {
 
-		try (Connection conn = super.getConnection()) {
-			PreparedStatement statement = conn
-					.prepareStatement("INSERT INTO producten(id,naam,prijs,omschrijving,fabrikant) VALUES("
-							+id+",'" +naam+"'," +prijs+",'" +omschrijving+"','" +fabrikant+"')");
-			statement.executeQuery();
-			//ResultSet rs = statement.executeQuery();
-			//rs.close();
-			//TODO hier moet ergens een insert voor categorie komen 
-			statement.close();
-			conn.close();
+			try (Connection conn = super.getConnection()) {
+				PreparedStatement statement = conn.prepareStatement("INSTERT INTO producten(id,naam,prijs,omschrijving,fabrikant) VALUES(?,?,?,?,?)");
+				statement.setInt(1, id);
+				statement.setString(2, naam);
+				statement.setDouble(3, prijs);
+				statement.setString(4, omschrijving);
+				statement.setString(5, fabrikant);
+				statement.executeQuery();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+				conn.commit();
+				statement.close();
+				conn.close();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			//return null;
 		}
-		//return null;
-	}
 
-	public void editProduct(int id, String naam,double prijs,String omschrijving,String fabrikant) {
-		try (Connection conn = super.getConnection()) {
-			PreparedStatement statement = conn
-					.prepareStatement("UPDATE producten set naam= '"+naam+"',prijs= "+prijs+",omschrijving ='"+omschrijving
-							+"',fabrikant= '"+fabrikant+"' WHERE id ="+id);			
-			statement.executeQuery();
-			ResultSet rs = statement.executeQuery();
+		public void editProduct(int id, String naam,double prijs,String omschrijving,String fabrikant) {
+		//TODO correct sql tatement
+			try (Connection conn = super.getConnection()) {
+				PreparedStatement statement = conn
+						.prepareStatement("UPDATE producten set naam=?,prijs=?,omschrijving =?, fabrikant=? WHERE id =?");
+				statement.setString(1, naam);
+				statement.setDouble(2, prijs);
+				statement.setString(3, omschrijving);
+				statement.setString(4, fabrikant);
+				statement.setInt(5, id);
+				statement.executeQuery();
 
-			rs.close();
-			statement.close();
-			conn.close();
+				conn.commit();
+				statement.close();
+				conn.close();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			//return null;
 		}
-		//return null;
-	}
-	
-	public void deleteProduct(int id) {
-		try (Connection conn = super.getConnection()) {
-			PreparedStatement statement = conn
-					.prepareStatement("delete from producten where id= " + id);
-			statement.executeQuery();
-			ResultSet rs = statement.executeQuery();
+		
+		public void deleteProduct(int id) {
+			//TODO correct statement
+			try (Connection conn = super.getConnection()) {
+				PreparedStatement statement = conn.prepareStatement("delete from producten where id=?");
+				statement.setInt(1, id);
+				statement.executeQuery();
+				
+				conn.commit();
+				statement.close();
+				conn.close();
 
-			rs.close();
-			statement.close();
-			conn.close();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			// return result;
 		}
-		// return result;
-	}
 
-}
+	}
