@@ -215,7 +215,7 @@ public class ProductDAO extends BaseDAO {
 		ArrayList<Product> list = new ArrayList<Product>();
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn.prepareStatement(
-					"SELECT * from Producten where id in (select productid from cart where klantid= ?");
+					"SELECT * from Producten where id in (select productid from cart where klantid= ?)");
 			statement.setInt(1, klantid);
 			statement.executeQuery();
 			ResultSet rs = statement.executeQuery();
