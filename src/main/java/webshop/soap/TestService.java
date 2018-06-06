@@ -1,39 +1,24 @@
 package webshop.soap;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+
+import hello.HelloWorld;
+import hello.HelloWorldService;
+
 public class TestService {
-	public int func(String name, int bedrag, String adres) {
-		int lastNumber = 0;
-		String filename = "C:\\Users\\Lucca.LAPTOP-PKB9NQVU\\EclipseProjects\\webshop\\webshop\\src\\main\\java\\webshop\\soap\\number.txt";
+	public int getUniekGetal(String name, int bedrag, String adres) throws MalformedURLException {
+		QName qName = new QName("http://Hello/", "HelloWorldService");
+		URL url = new URL("http://localhost:9999/java-ws/hello");
+		Service service = HelloWorldService.create(url, qName);
+		HelloWorld port = (HelloWorld) service.getPort(HelloWorld.class);
 		
-		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-
-			String sCurrentLine;
-
-			while ((sCurrentLine = br.readLine()) != null) {
-				lastNumber = Integer.parseInt(sCurrentLine);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		PrintWriter writer;
-		try {
-			writer = new PrintWriter(filename);
-			writer.print("");
-			int nextNumber = lastNumber + 1;
-			writer.print(nextNumber);
-			writer.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			TimeUnit.SECONDS.sleep(30);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return lastNumber;
+		int returnMsg = port.getUniekGetal(1, "Henk", 200);
+		return returnMsg;
 	}
 }
