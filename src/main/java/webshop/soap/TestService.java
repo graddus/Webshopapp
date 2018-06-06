@@ -12,13 +12,13 @@ import hello.HelloWorld;
 import hello.HelloWorldService;
 
 public class TestService {
-	public int getUniekGetal(String name, int bedrag, String adres) throws MalformedURLException {
+	public int getUniekGetal(String name, int bedrag, int adresid) throws MalformedURLException {
 		QName qName = new QName("http://Hello/", "HelloWorldService");
 		URL url = new URL("http://localhost:9999/java-ws/hello");
 		Service service = HelloWorldService.create(url, qName);
 		HelloWorld port = (HelloWorld) service.getPort(HelloWorld.class);
 		
-		int returnMsg = port.getUniekGetal(1, "Henk", 200);
+		int returnMsg = port.getUniekGetal(adresid, name, bedrag);
 		return returnMsg;
 	}
 }
