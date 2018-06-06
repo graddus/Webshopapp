@@ -7,11 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
@@ -40,7 +38,6 @@ public class KlantDAO extends BaseDAO{
             String naam;
             String geslacht; 
             int tel;
-            String geboortedatum;
             String email;
             Klant klant=null;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -51,8 +48,7 @@ public class KlantDAO extends BaseDAO{
                 naam = rs.getString("naam");
                 geslacht = rs.getString("geslacht");
                 tel=rs.getInt("telefoonnummer");
-                geboortedatum=rs.getString("geboortedatum");
-                date=format.parse(geboortedatum);
+                date=format.parse(rs.getString("geboortedatum"));
                 email=rs.getString("email");
                 Account acc=getAccountByID(rs.getInt("accountid"));
                 Adres adres=getAdresByID(rs.getInt("woonadres"));
@@ -87,7 +83,6 @@ public class KlantDAO extends BaseDAO{
             String naam;
             String geslacht; 
             int tel;
-            String geboortedatum;
             String email;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             Date date;
@@ -97,8 +92,7 @@ public class KlantDAO extends BaseDAO{
                 naam = rs.getString("naam");
                 geslacht = rs.getString("geslacht");
                 tel=rs.getInt("telefoonnummer");
-                geboortedatum=rs.getString("geboortedatum");
-                date=format.parse(geboortedatum);
+                date=format.parse(rs.getString("geboortedatum"));
                 email=rs.getString("email");
                 Account acc=getAccountByID(rs.getInt("accountid"));
                 Adres adres=getAdresByID(rs.getInt("woonadres"));

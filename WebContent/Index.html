@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="css/product.css">
+<link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 
@@ -11,7 +11,7 @@
 		<a class=floatref id="logout " onclick="logout()">Uitloggen</a>
 		<a class=floatref href="/webshop/Klant.html">Mijn Account</a>
 		<a class=floatref href="/webshop/Cart.html">Mijn Winkelmandje</a>
-			<div class=category data-productid=1>Muziek</div>
+		<div class=category data-productid=1>Muziek</div>
 		<div class=category data-productid=2>Kantoorartikelen</div>
 		<div class=category data-productid=3>Electronica</div>
 		<div class=category data-productid=4>Games</div>
@@ -28,7 +28,18 @@
 		</div>
 		</div>
 <div id="productList">
- <h1>Mijn Winkelmandje</h1>
+<h1>Aanbiedingen</h1>
+ <table id="sales">
+ <tr>
+ 	<th>Product&emsp;</th>
+    <th>Naam&emsp;</th>
+    <th>Omschrijving&emsp;</th>
+    <th>Prijs&emsp;</th>
+    <th>Fabrikant&emsp;</th>
+  </tr>
+ </table>
+ <br>
+ <h1>Nieuwste Producten</h1>
   <table id="product">
  <tr>
  	<th>Product&emsp;</th>
@@ -36,8 +47,6 @@
     <th>Omschrijving&emsp;</th>
     <th>Prijs&emsp;</th>
     <th>Fabrikant&emsp;</th>
-    <th>Aantal&emsp;</th>
-    <th>Acties&emsp;</th>
   </tr>
  </table>
  </div>
@@ -51,28 +60,42 @@
 	</footer>
 <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
 <script>
+function loadsales(){
+	var user=window.sessionStorage.getItem("user");
+	$.getJSON("/webshop/rest/product/sales", function(data){
+		if (data.length>0){
+		$.each(data, function(i, product){
+			$("#sales").append(
+					"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+" /></center>&emsp;<br></td>"
+			+"<td><b> <div id=productlink data-productid="+product.ID+">"+product.Naam+"</div></b>&emsp;<br></td>"
+			+"<td>"+product.Omschrijving+"&emsp;<br></td>"
+			+"<td><s>&euro;"+product.Prijs+"</s><b>&euro;"+product.NieuwePrijs+"&emsp;<br></td>"
+			+"<td>"+product.Fabrikant+"&emsp;<br></td></tr>");
+		});}
+		else{
+			$("#sales").append("<tr><td>Er zijn momenteel geen aanbiedingen.<td></tr>")
+		}
+
+});
+}
 function loadproduct(){
 		var user=window.sessionStorage.getItem("user");
-		var totaal=0;
-		if (user===null){
-			window.location.href = "/webshop/login.html";
-		}else{
-		$.getJSON("/webshop/rest/product/basket/"+user, function(data){
+		$.getJSON("/webshop/rest/product", function(data){
 			$.each(data, function(i, product){
 				$("#product").append(
-						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+"/></center>&emsp;<br></td>"
+						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+" /></center>&emsp;<br></td>"
 				+"<td><b> <div id=productlink data-productid="+product.ID+">"+product.Naam+"</div></b>&emsp;<br></td>"
 				+"<td>"+product.Omschrijving+"&emsp;<br></td>"
-				+"<td>&euro;"+Math.round(product.Prijs*product.Aantal*100)/100+"&emsp;<br></td>"
-				+"<td>"+product.Fabrikant+"&emsp;<br></td>"+"<td><b>"+product.Aantal+"</b><br></td><td><input type=button value='Verwijder uit mandje' data-custid="+user+" data-prodid="+product.ID+"></td></tr>");
-				totaal+=Math.round(product.Prijs*product.Aantal*100)/100			
+				+"<td>&euro;"+product.Prijs+"&emsp;<br></td>"
+				+"<td>"+product.Fabrikant+"&emsp;<br></td></tr>");
 			});
-			$('#product').append("<tr><td></td><td></td><td></td><td></td><td><b>Totaalprijs</b></td><td><b>&euro;"+totaal+"</b></td><td></td></tr>");
-	});}
+
+	});
 }
 </script>
 <script>loadproduct()
-document.title="Mijn Winkelmandje"
+loadsales()
+document.title="Welkom bij onze webshop!"
 </script>
 <script>
 $('#product').on('click','#productlink',function(){
@@ -85,14 +108,33 @@ $('#product').on('click','#productimg',function(){
 	  sessionStorage.setItem("id", value);
 	  window.location.href = "/webshop/Product.html";
 	});
+$('#sales').on('click','#productlink',function(){
+    var value = $(this).attr('data-productid');
+	  sessionStorage.setItem("id", value);
+	  window.location.href = "/webshop/Product.html";
+	});
+$('#sales').on('click','#productimg',function(){
+    var value = $(this).attr('data-productid');
+	  sessionStorage.setItem("id", value);
+	  window.location.href = "/webshop/Product.html";
+	});
+$( ".category" ).click(function() {
+	  var value = $(this).attr('data-productid');
+	  sessionStorage.setItem("catid", value);
+	  window.location.href = "/webshop/Categorie.html";
+	});
 </script>
 <script>
 function logout(){
+	var user=window.sessionStorage.getItem("user");
+	if (user===null){
+		window.location.href = "/webshop/login.html";
+	}else{
 	alert("U wordt nu uitgelogd.")
 	sessionStorage.removeItem('user');
-	window.location.href = "/webshop/Index.html";
+	location.reload();
 	
-}
+}}
 </script>
 	<script>
 	$( "#search" ).click(function() {
@@ -106,30 +148,6 @@ function logout(){
 		 else{
 		  window.location.href = "/webshop/Error.html";
 		}});
-	
-	$( ".category" ).click(function() {
-		  var value = $(this).attr('data-productid');
-		  sessionStorage.setItem("catid", value);
-		  window.location.href = "/webshop/Categorie.html";
-		});
-</script>
-<script>
-$("#product").on('click', 'input[type=button]', function () {
-		var custid=window.sessionStorage.getItem("user");
-	   var seriesid = $(this).data('prodid');
-	   var uri = "/webshop/rest/product/basket/delete/" + custid+"/"+seriesid;
-	   $.ajax(uri, { 
-	       type: "delete", 
-	       success: function(response) {
-	           $("#response").text("Het product is uit uw winkelmandje verwijderd.");
-	           alert("Het product is uit uw winkelmandje verwijderd.");
-	           location.reload();
-	       },
-	       error: function(response) {
-	           $("#response").text("Er is iets misgegaan.");
-	       }
-	   });
-	});
 </script>
 
 </body>

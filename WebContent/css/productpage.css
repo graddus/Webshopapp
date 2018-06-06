@@ -56,16 +56,57 @@ footer {
 	background-color: #403042;
 	color: lightsteelblue;
 }
-.topnav .floatref{
-float:right;}
+.topnav .floatref {
+	float: right;
+}
 #textfield {
 	width: 70%;
+}
+#productimage {
+	width: 110%;
+	height: auto;
+}
+#details {
+	width: 76%;
+	height: auto;
+	padding: 10px;
+	border: 5px solid gray;
+	margin: 0;
+}
+#head {
+	width: 50%;
+	height: auto;
+	margin: 0;
+}
+#buy {
+	width: 70%;
+	height: auto;
+	padding: 10px;
+	border: 5px solid gray;
+	margin: 0;
+}
+.wrapper {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	grid-gap: 10px;
+	grid-auto-rows: minmax(100px, auto);
+}
+#head {
+	grid-column: 2/5;
+	grid-row: 1;
+}
+#buy {
+	grid-column: 4/5;
+	grid-row: 1;
+}
+#details {
+	grid-column: 2/5;
+	grid-row: 2;
 }
 .topnav {
 	overflow: hidden;
 	background-color: #403042;
 }
-
 .topnav a {
 	float: left;
 	display: block;
@@ -75,13 +116,11 @@ float:right;}
 	text-decoration: none;
 	font-size: 17px;
 }
-
 .topnav a:hover {
 	border-bottom: 3px solid white;
 	background-color: #403042;
 	color: white;
 }
-
 .topnav a.active {
 	background-color: #403042;
 	color: lightsteelblue;
@@ -91,7 +130,6 @@ float:right;}
 	background-color: #403042;
 	color: white;
 }
-
 .category.active {
 	background-color: #403042;
 	color: lightsteelblue;
@@ -104,18 +142,16 @@ float:right;}
 	padding: 14px 16px;
 	text-decoration: none;
 	font-size: 17px;
+	cursor: pointer;
 }
-
 .searchhead {
 	background-color: #4c394e;
 }
-
 .searchhead input[type=text] {
 	padding: 6px;
 	font-size: 17px;
 	border-radius: 8px;
 }
-
 .searchhead .search-container button {
 	background-color: #4c394e;
 	padding: 6px 10px;
@@ -125,11 +161,9 @@ float:right;}
 	border: none;
 	cursor: pointer;
 }
-
 .searchhead .search-container button:hover {
 	background: #ccc;
 }
-
 @media screen and (max-width: 600px) {
 	.topnav .search-container {
 		float: none;

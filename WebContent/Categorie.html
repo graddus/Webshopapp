@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="css/product.css">
-</head>
+<link rel="stylesheet" href="css/general.css">
 <body>
 
 	<div class="topnav">
@@ -27,8 +26,9 @@
 			</form>
 		</div>
 		</div>
+		<div id="title">
+		</div>
 <div id="productList">
- <h1>Mijn Winkelmandje</h1>
   <table id="product">
  <tr>
  	<th>Product&emsp;</th>
@@ -36,8 +36,6 @@
     <th>Omschrijving&emsp;</th>
     <th>Prijs&emsp;</th>
     <th>Fabrikant&emsp;</th>
-    <th>Aantal&emsp;</th>
-    <th>Acties&emsp;</th>
   </tr>
  </table>
  </div>
@@ -51,28 +49,41 @@
 	</footer>
 <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
 <script>
-function loadproduct(){
-		var user=window.sessionStorage.getItem("user");
-		var totaal=0;
-		if (user===null){
-			window.location.href = "/webshop/login.html";
-		}else{
-		$.getJSON("/webshop/rest/product/basket/"+user, function(data){
+function loadproducts(){
+	if (sessionStorage.getItem("catid")===null){
+		console.log("null");
+		window.location.href="/webshop/Error.html";
+	}
+	else{
+	var productid=sessionStorage.getItem("catid");
+		$.getJSON("/webshop/rest/category/"+productid+"/products", function(data){
 			$.each(data, function(i, product){
 				$("#product").append(
 						"<tr><td><center><img src=imgs/Producten/"+product.ID+".jpg id=productimg width=320 data-productid="+product.ID+"/></center>&emsp;<br></td>"
 				+"<td><b> <div id=productlink data-productid="+product.ID+">"+product.Naam+"</div></b>&emsp;<br></td>"
 				+"<td>"+product.Omschrijving+"&emsp;<br></td>"
-				+"<td>&euro;"+Math.round(product.Prijs*product.Aantal*100)/100+"&emsp;<br></td>"
-				+"<td>"+product.Fabrikant+"&emsp;<br></td>"+"<td><b>"+product.Aantal+"</b><br></td><td><input type=button value='Verwijder uit mandje' data-custid="+user+" data-prodid="+product.ID+"></td></tr>");
-				totaal+=Math.round(product.Prijs*product.Aantal*100)/100			
+				+"<td>&euro;"+product.Prijs+"&emsp;<br></td>"
+				+"<td>"+product.Fabrikant+"&emsp;<br></td></tr>");
 			});
-			$('#product').append("<tr><td></td><td></td><td></td><td></td><td><b>Totaalprijs</b></td><td><b>&euro;"+totaal+"</b></td><td></td></tr>");
+
 	});}
 }
+function loadcategory(){
+if (sessionStorage.getItem("catid")===null){
+	console.log("null");
+	window.location.href="/webshop/Error.html";
+}
+else{
+var productid=sessionStorage.getItem("catid");
+$.getJSON("/webshop/rest/category/"+productid, function(product){
+ 	document.title=product.Naam;
+	$("#title").html("<h1>"+product.Naam+"</h1>"+product.Omschrijving+"<br><br>");
+});}
+}
 </script>
-<script>loadproduct()
-document.title="Mijn Winkelmandje"
+<script>
+loadproducts()
+loadcategory()
 </script>
 <script>
 $('#product').on('click','#productlink',function(){
@@ -112,24 +123,6 @@ function logout(){
 		  sessionStorage.setItem("catid", value);
 		  window.location.href = "/webshop/Categorie.html";
 		});
-</script>
-<script>
-$("#product").on('click', 'input[type=button]', function () {
-		var custid=window.sessionStorage.getItem("user");
-	   var seriesid = $(this).data('prodid');
-	   var uri = "/webshop/rest/product/basket/delete/" + custid+"/"+seriesid;
-	   $.ajax(uri, { 
-	       type: "delete", 
-	       success: function(response) {
-	           $("#response").text("Het product is uit uw winkelmandje verwijderd.");
-	           alert("Het product is uit uw winkelmandje verwijderd.");
-	           location.reload();
-	       },
-	       error: function(response) {
-	           $("#response").text("Er is iets misgegaan.");
-	       }
-	   });
-	});
 </script>
 
 </body>
