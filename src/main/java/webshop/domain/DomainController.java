@@ -87,4 +87,10 @@ public class DomainController {
 	public void deleteProduct(int id){
 		 ProductDAO.deleteProduct(id);
 	}
+	public void addBestelling(int id, int accountId, int adresId, String Status,int uniekGetal){
+		BestDAO.addBestelling(id, accountId, adresId, Status, uniekGetal);
+	}
+	public void addBestellingRegel(int id, int aantal, int prijs, int OrderID,int ProductId){
+		BestDAO.addBestellingRegel(id, aantal, prijs, OrderID, ProductId);
+	}
 }
