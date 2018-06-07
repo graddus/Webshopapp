@@ -110,18 +110,18 @@ public class BestellingDAO extends BaseDAO {
 
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn
-					.prepareStatement("INSTERT INTO Bestellingen(id,ACCOUNTID,adresid,UNIEKGETAL,STATUS) VALUES(?,?,?,?,?)");
+					.prepareStatement("INSERT INTO Bestellingen(id,ACCOUNTID,adresid,UNIEKGETAL,STATUS) VALUES(?,?,?,?,?)");
 			statement.setInt(1, id);
 			statement.setInt(2, accountId);
 			statement.setInt(3, adresId);
 			statement.setInt(4, uniekGetal);
 			statement.setString(5, Status);
 			statement.executeQuery();
-
+			
 			conn.commit();
 			statement.close();
 			conn.close();
-
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -131,7 +131,7 @@ public class BestellingDAO extends BaseDAO {
 
 		try (Connection conn = super.getConnection()) {
 			PreparedStatement statement = conn
-					.prepareStatement("INSTERT INTO BESTELLINGREGELS(id,aantal,prijs,OrderID,ProductId) VALUES(?,?,?,?,?)");
+					.prepareStatement("INSERT INTO BESTELLINGREGELS(id,aantal,prijs,OrderID,ProductId) VALUES(?,?,?,?,?)");
 			statement.setInt(1, id);
 			statement.setInt(2, aantal);
 			statement.setInt(3, prijs);
