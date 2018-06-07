@@ -18,6 +18,11 @@
 			<url>http://download.java.net/maven/2/</url>
 			<layout>default</layout>
 		</repository>
+		<repository>
+			<id>in-project</id>
+			<name>In Project Repo</name>
+			<url>file://${project.basedir}/libs</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -65,11 +70,18 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>nl.hu.V1IAC</groupId>
+			<artifactId>webservice</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 
 	</dependencies>
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
+
 		<plugins>
 
 			<plugin>
